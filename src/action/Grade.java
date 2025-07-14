@@ -73,7 +73,7 @@ public class Grade extends HttpServlet {
                     (studentNo == null || studentNo.isEmpty())) {
 
                     request.setAttribute("results", results);
-                    RequestDispatcher rd = request.getRequestDispatcher("/disp/grade.jsp");
+                    RequestDispatcher rd = request.getRequestDispatcher("/disp/grade_list.jsp");
                     rd.forward(request, response);
                     return;
                 }
@@ -146,7 +146,7 @@ public class Grade extends HttpServlet {
         }
 
         request.setAttribute("results", results);
-        RequestDispatcher rd = request.getRequestDispatcher("/disp/grade.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("/disp/grade_list.jsp");
         rd.forward(request, response);
     }
 
@@ -174,6 +174,21 @@ public class Grade extends HttpServlet {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     list.add(rs.getString("class_num"));
+                }
+            }
+        }
+        return list;
+    }
+
+ // ▼ 科目取得
+    private List<String> getSubject(Connection con, String schoolCd) throws Exception {
+        List<String> list = new ArrayList<>();
+        try (PreparedStatement ps = con.prepareStatement(
+            "SELECT DISTINCT subject FROM SUBJECT WHERE school_cd = ? ORDER BY subject")) {
+            ps.setString(1, schoolCd);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(rs.getString("subject"));
                 }
             }
         }
